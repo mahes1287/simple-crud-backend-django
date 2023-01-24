@@ -7,6 +7,8 @@ class Translations(models.Model):
     output = models.CharField(max_length=500)
     fromUser= models.CharField(max_length=500)
     # fromUser= models.ForeignKey(User, verbose_name="user")
+    def __str__(self):
+        return self.input
 
 
 # TODO create User and connect it, then update the fromUser field
