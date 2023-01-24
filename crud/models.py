@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Translations(models.Model):
+class Translation(models.Model):
     id = models.AutoField(primary_key=True)
     input = models.CharField(max_length=500)
     output = models.CharField(max_length=500)
