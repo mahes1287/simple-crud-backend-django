@@ -3,3 +3,5 @@ source ~/venvbox/django4/bin/activate
 python -m pip freeze > requirements.txt
 
 django-admin startproject base .
+
+python manage.py startapp crud
