@@ -19,3 +19,25 @@ class FirebaseAuthentication(BaseAuthentication):
 
         if not auth_header:
             raise TokenNotFound()
+
+        token = auth_header.split(" ").pop()
+
+        try:
+            decoded_token = auth.verify_id_token(token)
+        except Exception:
+            raise InvalidToken()
+
+        try:
+            uid = decoded_token.get("uid")
+        except Exception:
+            raise FirebaseAuthException()
+
+        User = get_user_model()
+
+        try:
+            user, created = User.objects.get_or_create(username=uid)
+            pass
+        except Exception as e:
+            print("you got a problem", e)
+            return None
+        return (user, None)
