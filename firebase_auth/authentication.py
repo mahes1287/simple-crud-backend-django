@@ -10,4 +10,12 @@ cred = credentials.Certificate(
     os.path.join(os.path.dirname(__file__), "secrets/firebaseconfig.json")
 )
 
-# app = firebase_admin.initialize_app(cred)
+app = firebase_admin.initialize_app(cred)
+
+
+class FirebaseAuthentication(BaseAuthentication):
+    def authenticate(self, request):
+        auth_header = request.META.get("HTTP_AUTHORIZATION")
+
+        if not auth_header:
+            raise TokenNotFound()
