@@ -38,7 +38,6 @@ def createTranslation(request):
 
 
 @api_view(["PUT"])
-@parser_classes([JSONParser])
 def updateTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)
@@ -50,7 +49,6 @@ def updateTranslation(request, pk):
 
 
 @api_view(["DELETE"])
-# @parser_classes([JSONParser])
 def deleteTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)
