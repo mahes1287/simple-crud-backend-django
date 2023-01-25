@@ -26,3 +26,4 @@ def createTranslation(request):
     return Response(serializer.data)
 
 # TODO ensure the response data cntain proper status code.
+# TODO error handling is pending
