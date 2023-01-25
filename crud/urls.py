@@ -12,7 +12,11 @@ urlpatterns = [
         views.updateTranslation,
         name="updateTranslation",
     ),
-    # path('translations/<str:pk>/delete', views.updateTranslation, name="deleteTranslation"),
+    path(
+        "translations/<str:pk>/delete",
+        views.deleteTranslation,
+        name="deleteTranslation",
+    ),
 ]
 
 # TODO set things for 404 response for invalid urls

@@ -49,15 +49,16 @@ def updateTranslation(request, pk):
     return Response(serializer.data)
 
 
-
-# @api_view(['DELETE'])
+@api_view(["DELETE"])
 # @parser_classes([JSONParser])
-# def updateTranslation(request):
-#     data = request.data
-#     print(data)
-#     translation = Translation.objects.create(**data)
-#     serializer = TranslationSerializer(translation, many=False)
-#     return Response(serializer.data)
+def deleteTranslation(request, pk):
+    data = request.data
+    translation = Translation.objects.get(id=pk)
+    translation.delete()
+    return Response("translation was deleted")
 
-# TODO ensure the response data cntain proper status code.
+
+# TODO ensure the response data contain proper status code.
 # TODO error handling is pending
+# TODO add message, status , data in response object
+# TODO delete response if the data was already deleted
