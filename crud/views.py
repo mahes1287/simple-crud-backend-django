@@ -49,6 +49,7 @@ def updateTranslation(request, pk):
     return Response(serializer.data)
 
 
+
 # @api_view(['DELETE'])
 # @parser_classes([JSONParser])
 # def updateTranslation(request):
