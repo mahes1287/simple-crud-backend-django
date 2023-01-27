@@ -15,7 +15,6 @@ def index(request):
 
 
 @api_view(["GET"])
-@permission_classes(IsAuthenticated)
 def getTranslations(request):
     translation = Translation.objects.all()
     serializer = TranslationSerializer(translation, many=True)
@@ -31,6 +30,7 @@ def getOneTranslation(request, pk):
 
 @api_view(["POST"])
 @parser_classes([JSONParser])
+# @permission_classes(IsAuthenticated)
 def createTranslation(request):
     data = request.data
     print(data)
@@ -40,6 +40,7 @@ def createTranslation(request):
 
 
 @api_view(["PUT"])
+# @permission_classes(IsAuthenticated)
 def updateTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)
@@ -51,6 +52,7 @@ def updateTranslation(request, pk):
 
 
 @api_view(["DELETE"])
+# @permission_classes(IsAuthenticated)
 def deleteTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)
