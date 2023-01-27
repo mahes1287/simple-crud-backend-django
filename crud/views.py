@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .serializers import TranslationSerializer
 from .models import Translation
 from rest_framework.parsers import JSONParser
@@ -14,6 +15,7 @@ def index(request):
 
 
 @api_view(["GET"])
+@permission_classes(IsAuthenticated)
 def getTranslations(request):
     translation = Translation.objects.all()
     serializer = TranslationSerializer(translation, many=True)
