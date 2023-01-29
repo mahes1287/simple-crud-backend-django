@@ -2,19 +2,23 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from firebase_auth.permissions import AllowAll
 from .serializers import TranslationSerializer
 from .models import Translation
 from rest_framework.parsers import JSONParser
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
 
+@api_view(["GET"])
 def index(request):
     return HttpResponse("You reached top of Simple Crud App")
 
 
 @api_view(["GET"])
+# @permission_classes((AllowAny,))
 def getTranslations(request):
     translation = Translation.objects.all()
     serializer = TranslationSerializer(translation, many=True)
@@ -23,16 +27,24 @@ def getTranslations(request):
 
 @api_view(["GET"])
 def getOneTranslation(request, pk):
-    translation = Translation.objects.get(id=pk)
-    serializer = TranslationSerializer(translation, many=False)
-    return Response(serializer.data)
+    try:
+        translation = Translation.objects.get(id=pk)
+        serializer = TranslationSerializer(translation, many=False)
+        newdict = {"error": False, "message": "success"}
+        newdict.update(serializer.data)
+        print(serializer.data)
+        return Response(newdict)
+    
+    except ObjectDoesNotExist:
+        # print(translation)
+        return Response({"message": "Does not exist", "error": True})
 
 
 @api_view(["POST"])
 @parser_classes([JSONParser])
-# @permission_classes(IsAuthenticated)
 def createTranslation(request):
     data = request.data
+    print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq in the post view")
     print(data)
     translation = Translation.objects.create(**data)
     serializer = TranslationSerializer(translation, many=False)
@@ -40,7 +52,6 @@ def createTranslation(request):
 
 
 @api_view(["PUT"])
-# @permission_classes(IsAuthenticated)
 def updateTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)
@@ -52,7 +63,7 @@ def updateTranslation(request, pk):
 
 
 @api_view(["DELETE"])
-# @permission_classes(IsAuthenticated)
+@permission_classes((IsAuthenticated,))
 def deleteTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)

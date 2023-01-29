@@ -15,12 +15,18 @@ app = firebase_admin.initialize_app(cred)
 
 class FirebaseAuthentication(BaseAuthentication):
     def authenticate(self, request):
+
         auth_header = request.META.get("HTTP_AUTHORIZATION")
 
-        if not auth_header:
-            raise TokenNotFound()
+        if auth_header == None:
+            return None
 
         token = auth_header.split(" ").pop()
+
+        if token == "null":
+            raise TokenNotFound()
+
+        decoded_token = None
         try:
             decoded_token = auth.verify_id_token(token)
         except Exception:
