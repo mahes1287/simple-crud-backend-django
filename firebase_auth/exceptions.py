@@ -9,7 +9,7 @@ class FirebaseAuthException(APIException):
 
 class TokenNotFound(APIException):
     status = 401
-    default_detail = "Credentials not found"
+    default_detail = "Credentials not found, need to login"
     default_code = "token_not_found"
 
 
