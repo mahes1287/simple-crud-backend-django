@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from firebase_auth.permissions import AllowAll
@@ -14,7 +15,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 @api_view(["GET"])
 def index(request):
-    return HttpResponse("You reached top of Simple Crud App")
+    response = {"message": "Hello api", "data": False, "error": False}
+    return Response(data=response, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -34,7 +36,7 @@ def getOneTranslation(request, pk):
         newdict.update(serializer.data)
         print(serializer.data)
         return Response(newdict)
-    
+
     except ObjectDoesNotExist:
         # print(translation)
         return Response({"message": "Does not exist", "error": True})
