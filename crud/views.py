@@ -34,7 +34,6 @@ def getOneTranslation(request, pk):
         serializer = TranslationSerializer(translation, many=False)
         newdict = {"error": False, "message": "success"}
         newdict.update(serializer.data)
-        print(serializer.data)
         return Response(newdict)
 
     except ObjectDoesNotExist:
