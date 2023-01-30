@@ -136,9 +136,7 @@ REST_FRAMEWORK = {
 # ]
 
 # for deployment
-ALLOWED_HOSTS = [
- "*"
-]
+ALLOWED_HOSTS = ["*"]
 
 CORS_ORIGIN_ALLOW_ALL = False
 
