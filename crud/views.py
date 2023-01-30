@@ -46,10 +46,7 @@ def getOneTranslation(request, pk):
 @parser_classes([JSONParser])
 def createTranslation(request):
     data = request.data
-    print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq in the post view")
-    print(data)
     translation = Translation.objects.create(**data)
-    print(translation)
     serializer = TranslationSerializer(translation, many=False)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
