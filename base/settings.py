@@ -1,4 +1,8 @@
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -8,12 +12,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-c2c%2c49$jv26j1hf64m(%4=jf8*0wre(rk@-4+aj@9#n_#t7r"
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.getenv("DEBUG"))
 
-ALLOWED_HOSTS = []
+# CORS header related configuration
+# ALLOWED_HOSTS = [
+#     "http://localhost:3000",
+#     "127.0.0.1",
+#     "http://localhost:8000",
+#     "localhost",
+# ]
+
+# for deployment
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -127,16 +140,6 @@ REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
-# CORS header related configuration
-# ALLOWED_HOSTS = [
-#     "http://localhost:3000",
-#     "127.0.0.1",
-#     "http://localhost:8000",
-#     "localhost",
-# ]
-
-# for deployment
-ALLOWED_HOSTS = ["*"]
 
 CORS_ORIGIN_ALLOW_ALL = False
 

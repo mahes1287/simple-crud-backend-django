@@ -6,9 +6,24 @@ from rest_framework.authentication import BaseAuthentication
 
 from .exceptions import FirebaseAuthException, InvalidToken, TokenNotFound
 
-cred = credentials.Certificate(
-    os.path.join(os.path.dirname(__file__), "secrets/firebaseconfig.json")
-)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+config = {
+    "type": "service_account",
+    "project_id": str(os.getenv("PROJECT_ID")),
+    "private_key_id": str(os.getenv("PRIVATE_KEY_ID")),
+    "private_key": str(os.getenv("PRIVATE_KEY")),
+    "client_email": str(os.getenv("CLIENT_EMAIL")),
+    "client_id": str(os.getenv("CLIENT_ID")),
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": str(os.getenv("CLIENT_X509_CERT_URL")),
+}
+
+cred = credentials.Certificate(config)
 
 app = firebase_admin.initialize_app(cred)
 
