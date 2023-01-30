@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 @api_view(["GET"])
-def index():
+def index(request):
     response = {"message": "Hello from user app", "data": False, "error": False}
     return Response(data=response, status=status.HTTP_200_OK)
 
