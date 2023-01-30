@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "crud.apps.CrudConfig",
     "corsheaders",
+    "user.apps.UserConfig",
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,5 @@ ALLOWED_HOSTS = [
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
+
+AUTH_USER_MODEL = "user.User"
