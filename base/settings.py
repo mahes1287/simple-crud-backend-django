@@ -128,11 +128,16 @@ REST_FRAMEWORK = {
 }
 
 # CORS header related configuration
+# ALLOWED_HOSTS = [
+#     "http://localhost:3000",
+#     "127.0.0.1",
+#     "http://localhost:8000",
+#     "localhost",
+# ]
+
+# for deployment
 ALLOWED_HOSTS = [
-    "http://localhost:3000",
-    "127.0.0.1",
-    "http://localhost:8000",
-    "localhost",
+ "*"
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
