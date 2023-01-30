@@ -37,7 +37,6 @@ def getOneTranslation(request, pk):
         return Response(newdict)
 
     except ObjectDoesNotExist:
-        # print(translation)
         return Response({"message": "Does not exist", "error": True})
 
 
@@ -68,9 +67,3 @@ def deleteTranslation(request, pk):
     translation = Translation.objects.get(id=pk)
     translation.delete()
     return Response("translation was deleted")
-
-
-# TODO ensure the response data contain proper status code.
-# TODO error handling is pending
-# TODO add message, status , data in response object
-# TODO delete response if the data was already deleted
