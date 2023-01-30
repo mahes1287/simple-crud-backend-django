@@ -49,8 +49,9 @@ def createTranslation(request):
     print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq in the post view")
     print(data)
     translation = Translation.objects.create(**data)
+    print(translation)
     serializer = TranslationSerializer(translation, many=False)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["PUT"])
