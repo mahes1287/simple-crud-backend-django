@@ -34,6 +34,7 @@ class FirebaseAuthentication(BaseAuthentication):
 
         try:
             uid = decoded_token.get("uid")
+
         except Exception:
             raise FirebaseAuthException()
 
@@ -41,6 +42,8 @@ class FirebaseAuthentication(BaseAuthentication):
 
         try:
             user, created = User.objects.get_or_create(username=uid)
+            print("in authenticate")
+            print(user)
             pass
         except Exception as e:
             print("you got a problem", e)
