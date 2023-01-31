@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from corsheaders.defaults import default_headers
 
 load_dotenv()
 
@@ -23,7 +24,15 @@ print("debug", DEBUG)
 
 # for deployment
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+# CORS_ALLOW_HEADERS = "*"
+CORS_ALLOW_HEADERS = default_headers + ("Access-Control-Allow-Origin",)
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+if DEBUG:
+    CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
+else:
+    CORS_ORIGIN_WHITELIST = ("https://scintillating-fox-b0f291.netlify.app",)
 
 # Application definition
 
@@ -41,9 +50,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -140,10 +149,5 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
-
-
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
 
 AUTH_USER_MODEL = "user.User"
