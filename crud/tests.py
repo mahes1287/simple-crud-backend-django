@@ -95,7 +95,17 @@ class CreateTranslationClientTestCase(APITestCase):
 
 class UpdateTranslationTestCase(APITestCase):
     def test_update_translation(self):
-        pass
+        sample_translation = {
+            "input": "input1",
+            "output": "output1",
+            "fromUser": "tester",
+        }
+
+        request = self.factory.post(self.url, sample_translation)
+        request.user = self.user
+        response = self.view(request)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
 class DeleteTranslationTestCase(APITestCase):
