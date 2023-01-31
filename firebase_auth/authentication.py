@@ -12,15 +12,15 @@ load_dotenv()
 
 config = {
     "type": "service_account",
-    "project_id": str(os.environ("PROJECT_ID")),
-    "private_key_id": str(os.environ("PRIVATE_KEY_ID")),
-    "private_key": str(os.environ("PRIVATE_KEY")),
-    "client_email": str(os.environ("CLIENT_EMAIL")),
-    "client_id": str(os.environ("CLIENT_ID")),
+    "project_id": str(os.environ.get("PROJECT_ID")),
+    "private_key_id": str(os.environ.get("PRIVATE_KEY_ID")),
+    "private_key": str(os.environ.get("PRIVATE_KEY")),
+    "client_email": str(os.environ.get("CLIENT_EMAIL")),
+    "client_id": str(os.environ.get("CLIENT_ID")),
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": str(os.environ("CLIENT_X509_CERT_URL")),
+    "client_x509_cert_url": str(os.environ.get("CLIENT_X509_CERT_URL")),
 }
 
 cred = credentials.Certificate(config)
