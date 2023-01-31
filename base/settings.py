@@ -1,21 +1,17 @@
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = str(os.getenv.get("SECRET_KEY"))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+DEBUG = False
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = str(os.getenv("SECRET_KEY"))
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG"))
+print("debug", DEBUG)
 
 # CORS header related configuration
 # ALLOWED_HOSTS = [
@@ -77,7 +73,6 @@ WSGI_APPLICATION = "base.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     "default": {
@@ -88,7 +83,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
