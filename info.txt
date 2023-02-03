@@ -5,3 +5,11 @@ python -m pip freeze > requirements.txt
 django-admin startproject base .
 
 python manage.py startapp crud
+
+fly ssh console -C 'python /code/manage.py createsuperuser'
+
+fly ssh console -C 'python /code/manage.py migrate'
+
+fly ssh console -C 'python /code/manage.py collectstatic'
+
+
