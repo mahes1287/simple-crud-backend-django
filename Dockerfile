@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p /code
-
+RUN mkdir -p code/staticfiles
 WORKDIR /code
 
 COPY requirements.txt /tmp/requirements.txt
@@ -17,6 +17,7 @@ RUN set -ex && \
     rm -rf /root/.cache/
 
 COPY . /code/
+
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
