@@ -12,4 +12,4 @@ fly ssh console -C 'python /code/manage.py migrate'
 
 fly ssh console -C 'python /code/manage.py collectstatic'
 
-
+fly deploy
