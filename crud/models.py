@@ -10,5 +10,3 @@ class Translation(models.Model):
     def __str__(self):
         return self.input
 
-
-# TODO create User and connect it, then update the fromUser field

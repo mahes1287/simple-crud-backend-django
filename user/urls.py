@@ -8,5 +8,3 @@ urlpatterns = [
     path("all/", views.GetAllUserInfo, name="getAllUserInfo"),
     path("<str:uid>/", views.GetUserInfo, name="getUserInfo"),
 ]
-
-# TODO set things for 404 response for invalid urls

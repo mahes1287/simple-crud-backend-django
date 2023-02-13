@@ -18,5 +18,3 @@ urlpatterns = [
         name="deleteTranslation",
     ),
 ]
-
-# TODO set things for 404 response for invalid urls
