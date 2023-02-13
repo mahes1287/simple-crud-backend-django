@@ -14,4 +14,8 @@ fly ssh console -C 'python /code/manage.py migrate'
 
 fly ssh console -C 'python /code/manage.py collectstatic'
 
+fly ssh console -C 'python /code/manage.py createsuperuser'
+
 fly deploy
+
+python manage.py createsuperuser
