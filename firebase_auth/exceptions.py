@@ -15,6 +15,6 @@ class TokenNotFound(APIException):
 
 
 class InvalidToken(APIException):
-    status_code = 401
+    status_code = status.HTTP_401_UNAUTHORIZED
     default_detail = "Invalid Token"
     default_code = "invalid_token"

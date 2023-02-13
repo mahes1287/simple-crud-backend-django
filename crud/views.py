@@ -14,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 @api_view(["GET"])
+# @permission_classes((IsAuthenticated,))
 def index(request):
     response = {"message": "Hello api", "data": False, "error": False}
     return Response(data=response, status=status.HTTP_200_OK)
@@ -32,12 +33,14 @@ def getOneTranslation(request, pk):
     try:
         translation = Translation.objects.get(id=pk)
         serializer = TranslationSerializer(translation, many=False)
-        newdict = {"error": False, "message": "success"}
-        newdict.update(serializer.data)
+        newdict = {"error": False, "message": "success", "data": serializer.data}
         return Response(newdict)
 
     except ObjectDoesNotExist:
-        return Response({"message": "Does not exist", "error": True})
+        return Response(
+            {"message": "Does not exist", "error": True, "data": None},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
 
 @api_view(["POST"])
@@ -50,6 +53,8 @@ def createTranslation(request):
 
 
 @api_view(["PUT"])
+# @permission_classes((IsAuthenticated,))
+@parser_classes([JSONParser])
 def updateTranslation(request, pk):
     data = request.data
     translation = Translation.objects.get(id=pk)
@@ -57,13 +62,23 @@ def updateTranslation(request, pk):
     serializer = TranslationSerializer(instance=translation, data=data)
     if serializer.is_valid():
         serializer.save()
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["DELETE"])
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 def deleteTranslation(request, pk):
     data = request.data
-    translation = Translation.objects.get(id=pk)
-    translation.delete()
-    return Response("translation was deleted")
+    try:
+
+        translation = Translation.objects.get(id=pk)
+        translation.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    except Translation.DoesNotExist:
+        expected_data = None
+
+        return Response(
+            {"message": "Does not exist", "error": True, "data": None},
+            status=status.HTTP_404_NOT_FOUND,
+        )

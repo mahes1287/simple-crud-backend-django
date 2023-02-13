@@ -42,6 +42,7 @@ class FirebaseAuthentication(BaseAuthentication):
             raise TokenNotFound()
 
         decoded_token = None
+        
         try:
             decoded_token = auth.verify_id_token(token)
         except Exception:
@@ -49,7 +50,6 @@ class FirebaseAuthentication(BaseAuthentication):
 
         try:
             uid = decoded_token.get("uid")
-
         except Exception:
             raise FirebaseAuthException()
 

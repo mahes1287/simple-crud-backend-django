@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from corsheaders.defaults import default_headers
-from distutils.util import strtobool
+from str2bool import str2bool
 
 load_dotenv()
 
@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = strtobool(os.environ.get("DEBUG"))
+DEBUG = str2bool(os.environ.get("DEBUG"))
 
 print("debug", DEBUG)
 
