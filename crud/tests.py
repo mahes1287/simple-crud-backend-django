@@ -1,113 +1,151 @@
-from django.test import TestCase
-from rest_framework.test import APITestCase, APIRequestFactory
+import pytest
 from rest_framework import status
 from django.urls import reverse
-from .views import (
-    getTranslations,
-    getOneTranslation,
-    createTranslation,
-    updateTranslation,
-    deleteTranslation,
-)
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+import json
+from .models import Translation
+from .serializers import TranslationSerializer
 
 
-class IndexTestCase(APITestCase):
-    def test_index_api(self):
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["message"], "Hello api")
+def test_get_traslation_index_api(client):
+    url = reverse("index")
+    response = client.get(url)
+    assert response.status_code == 200
+    assert response.data["message"] == "Hello api"
 
 
-class GetTranslationsTestCase(APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        self.view = getTranslations
-        self.url = reverse("getAllTranslations")
-
-    def test_translations_list(self):
-        request = self.factory.get(self.url)
-        response = self.view(request)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+@pytest.mark.django_db
+def test_translation_create_batch(translations_batch):
+    # test the database has connected by creating objects
+    assert Translation.objects.count() == 10
 
 
-class GetTranslationsClientTestCase(APITestCase):
-    def setUp(self):
-        self.url = reverse("getAllTranslations")
+@pytest.mark.django_db
+def test_get_single_translation_exist_in_db(client, translation_single):
+    id = 1
+    url = reverse("getOneTranslation", args=(id,))
 
-    def test_translations_list(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    response = client.get(url)
 
+    translations = Translation.objects.get(id=id)
+    expected_data = TranslationSerializer(translations, many=False).data
 
-class CreateTranslationTestCase(APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        self.view = createTranslation
-        self.url = reverse("createTranslation")
-        self.user = User.objects.create(
-            username="tester",
-            email="test@test.com",
-            password="password",
-        )
-
-    def test_create_translation(self):
-        sample_translation = {
-            "input": "input1",
-            "output": "output1",
-            "fromUser": "tester",
-        }
-
-        request = self.factory.post(self.url, sample_translation)
-        request.user = self.user
-        response = self.view(request)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["error"] == False
+    assert response.data["message"] == "success"
+    assert response.data["data"] == expected_data
 
 
-class CreateTranslationClientTestCase(APITestCase):
-    def setUp(self):
-        self.factory = APIRequestFactory()
-        self.view = createTranslation
-        self.url = reverse("createTranslation")
-        self.user = User.objects.create(
-            username="tester",
-            email="test@test.com",
-            password="password",
-        )
+@pytest.mark.django_db
+def test_get_single_translation_not_exist_in_db(client, translation_single):
+    id = 2
+    url = reverse("getOneTranslation", args=(id,))
+    response = client.get(url)
 
-    def test_create_translation(self):
-        sample_translation = {
-            "input": "input1",
-            "output": "output1",
-            "fromUser": "tester",
-        }
+    try:
+        translations = Translation.objects.get(id=id)
+        expected_data = TranslationSerializer(translations, many=False).data
+    except Translation.DoesNotExist:
+        expected_data = None
 
-        request = self.factory.post(self.url, sample_translation)
-        request.user = self.user
-        response = self.view(request)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.data["error"] == True
+    assert response.data["data"] == expected_data  # both are None
+    assert response.data["message"] == "Does not exist"
 
 
-class UpdateTranslationTestCase(APITestCase):
-    def test_update_translation(self):
-        sample_translation = {
-            "input": "input1",
-            "output": "output1",
-            "fromUser": "tester",
-        }
-
-        request = self.factory.post(self.url, sample_translation)
-        request.user = self.user
-        response = self.view(request)
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+@pytest.mark.django_db
+def test_get_all_translations(client, translations_batch):
+    url = reverse("getAllTranslations")
+    response = client.get(url)
+    translations = Translation.objects.all()
+    expected_data = TranslationSerializer(translations, many=True).data
+    assert response.status_code == status.HTTP_200_OK
+    assert len(json.loads(response.content)) == 10
+    assert response.data == expected_data
 
 
-class DeleteTranslationTestCase(APITestCase):
-    def test_update_translation(self):
-        pass
+@pytest.mark.django_db
+def test_post_translation(client):
+    data = {"input": "i am input", "output": "output", "fromUser": "Boy Trucker"}
+    output_data = {
+        "id": 1,
+        "input": "i am input",
+        "output": "output",
+        "fromUser": "Boy Trucker",
+    }
+    url = reverse("createTranslation")
+    response = client.post(url, data, format="json")
+
+    try:
+        translations = Translation.objects.get(id=1)
+        expected_data = TranslationSerializer(translations, many=False).data
+    except Translation.DoesNotExist:
+        expected_data = None
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert json.loads(response.content) == expected_data
+
+
+@pytest.mark.django_db
+def test_put_translation(client):
+    data = {"input": "i am input", "output": "output", "fromUser": "Boy Trucker"}
+    put_data = {
+        "id": 1,
+        "input": "i am updated input",
+        "output": "updated output",
+        "fromUser": "Boy Trucker",
+    }
+    url_post = reverse("createTranslation")
+    url_put = reverse("updateTranslation", kwargs={"pk": 1})
+
+    response_post = client.post(url_post, data, format="json")
+    response_put = client.put(url_put, put_data, format="json")
+
+    try:
+        translations = Translation.objects.get(id=1)
+        expected_data = TranslationSerializer(translations, many=False).data
+    except Translation.DoesNotExist:
+        expected_data = None
+    assert response_post.status_code == status.HTTP_201_CREATED
+    assert response_put.status_code == status.HTTP_200_OK
+    assert json.loads(response_put.content) == expected_data
+
+
+@pytest.mark.django_db
+def test_delete_translation(client, translation_single):
+    start = Translation.objects.all().count()
+    url = reverse("deleteTranslation", kwargs={"pk": 1})
+
+    response = client.delete(url)
+    end = Translation.objects.all().count()
+    response_for_already_deleted = client.delete(url)
+
+    try:
+        translations = Translation.objects.get(id=1)
+        expected_data = TranslationSerializer(translations, many=False).data
+    except Translation.DoesNotExist:
+        expected_data = None
+
+    assert start == 1
+    assert end == 0
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert response_for_already_deleted.status_code == status.HTTP_404_NOT_FOUND
+
+
+# @pytest.mark.django_db
+# def test_with_authenticated_client(client, User):
+#     username = "user1"
+#     password = "bar"
+#     user = User.objects.create_user(username=username, password=password)
+#     # Use this:
+#     client.force_login(user)
+#     # Or this:
+#     client.login(username=username, password=password)
+#     response = client.get("/private")
+#     assert response.content == "Protected Area"
+
+
+# @pytest.mark.django_db
+# def test_sth_with_auth(logged_in_client):
+#     response = logged_in_client.get("/api/")
+#     assert response.status_code == 200
