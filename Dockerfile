@@ -6,7 +6,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p /code
-RUN mkdir -p code/staticfiles
 WORKDIR /code
 
 COPY requirements.txt /tmp/requirements.txt
